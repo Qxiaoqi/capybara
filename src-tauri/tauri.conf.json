@@ -11,17 +11,18 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false,
       "shell": {
-        "all": false,
         "open": true
       }
     },
     "windows": [
       {
-        "title": "capybara",
-        "width": 800,
-        "height": 600
+        "title": "Capybara",
+        "resizable": false,
+        "alwaysOnTop": true,
+        "transparent": true,
+        "width": 400,
+        "height": 400
       }
     ],
     "security": {
@@ -37,7 +38,8 @@
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
-      ]
+      ],
+      "resources": ["resources/*"]
     }
   }
 }

@@ -1,40 +1,49 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/tauri";
-import "./App.css";
+import { useEffect } from "react"
+import { invoke } from "@tauri-apps/api/tauri"
+import { listen, Event } from "@tauri-apps/api/event"
+import "./style/tailwind.global.css"
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
-
-  async function greet() {
+  async function screen() {
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    setGreetMsg(await invoke("greet", { name }));
+    invoke("ocr_command")
   }
 
-  return (
-    <div className="container">
-      <h1>Welcome to Tauri!</h1>
+  useEffect(() => {
+    let unlisten: (() => void) | undefined = undefined
+    ;(async () => {
+      unlisten = await listen("change-text", async (event: Event<string>) => {
+        const selectedText = event.payload
+        if (selectedText) {
+          console.log(selectedText)
+        }
+      })
+    })()
+    return () => {
+      unlisten?.()
+    }
+  }, [])
 
-      <div className="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
+  return (
+    <div className="flex flex-col justify-between h-full">
+      <div className="flex justify-center items-center">
+        <button className="btn flex-1 mx-4 mt-4" onClick={screen}>
+          Screen OCR
+        </button>
+        <button className="btn flex-1 mx-4 mt-4">Clipboard OCR</button>
+      </div>
+
+      {/* <div className="row">
         <a href="https://reactjs.org" target="_blank">
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
-      </div>
+      </div> */}
 
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
+      {/* <form
         className="row"
         onSubmit={(e) => {
-          e.preventDefault();
-          greet();
+          e.preventDefault()
+          greet()
         }}
       >
         <input
@@ -45,9 +54,9 @@ function App() {
         <button type="submit">Greet</button>
       </form>
 
-      <p>{greetMsg}</p>
+      <p>{greetMsg}</p> */}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
