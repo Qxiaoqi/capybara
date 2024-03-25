@@ -1,5 +1,5 @@
 use parking_lot::Mutex;
-use tauri::{AppHandle};
+use tauri::AppHandle;
 
 use serde::{Deserialize, Serialize};
 
@@ -19,7 +19,6 @@ pub struct Config {
     // pub hide_the_icon_in_the_dock: Option<bool>,
     // pub proxy: Option<ProxyConfig>,
 }
-
 
 static CONFIG_CACHE: Mutex<Option<Config>> = Mutex::new(None);
 

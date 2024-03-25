@@ -1,21 +1,20 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod config;
 mod ocr;
 mod utils;
 mod windows;
-mod config;
 
-use crate::ocr::{ocr_command};
+use crate::ocr::ocr_command;
 
-use parking_lot::Mutex;
 use once_cell::sync::OnceCell;
-use tauri::{AppHandle};
+use parking_lot::Mutex;
 use sysinfo::{CpuExt, System, SystemExt};
+use tauri::AppHandle;
 
 pub static APP_HANDLE: OnceCell<AppHandle> = OnceCell::new();
 pub static CPU_VENDOR: Mutex<String> = Mutex::new(String::new());
-
 
 fn main() {
     let mut sys = System::new();

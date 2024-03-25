@@ -13,7 +13,7 @@ pub fn do_ocr() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut rel_path = "resources/bin/ocr_intel".to_string();
     if *CPU_VENDOR.lock() == "Apple" {
-      rel_path = "resources/bin/ocr_apple".to_string();
+        rel_path = "resources/bin/ocr_apple".to_string();
     }
 
     let app = APP_HANDLE.get().unwrap();
