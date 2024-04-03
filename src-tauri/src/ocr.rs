@@ -1,3 +1,12 @@
+use parking_lot::Mutex;
+
+static LAST_OCR_TEXT: Mutex<String> = Mutex::new(String::new());
+
+#[tauri::command(async)]
+pub fn get_last_ocr_text() -> String {
+    LAST_OCR_TEXT.lock().clone()
+}
+
 #[tauri::command(async)]
 pub fn ocr_command() {
     ocr();
@@ -32,8 +41,15 @@ pub fn do_ocr() -> Result<(), Box<dyn std::error::Error>> {
     if output.status.success() {
         // get output content
         let content = String::from_utf8(output.stdout).expect("failed to parse ocr binary output");
-        crate::utils::send_text(content);
-        crate::windows::show_translator_window(false, false, true);
+        let (window, exist) = crate::windows::show_translator_window(false, false, true);
+        if exist {
+            window
+                .emit("change-text", content.clone())
+                .unwrap_or_default();
+            *LAST_OCR_TEXT.lock() = String::new();
+        } else {
+            *LAST_OCR_TEXT.lock() = content;
+        }
         Ok(())
     } else {
         Err("ocr binary failed".into())

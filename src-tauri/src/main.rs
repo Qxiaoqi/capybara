@@ -3,10 +3,9 @@
 
 mod config;
 mod ocr;
-mod utils;
 mod windows;
 
-use crate::ocr::ocr_command;
+use crate::ocr::{get_last_ocr_text, ocr_command};
 
 use once_cell::sync::OnceCell;
 use parking_lot::Mutex;
@@ -29,7 +28,7 @@ fn main() {
             APP_HANDLE.get_or_init(|| app.handle().clone());
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![ocr_command])
+        .invoke_handler(tauri::generate_handler![ocr_command, get_last_ocr_text])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

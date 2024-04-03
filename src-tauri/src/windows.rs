@@ -1,8 +1,8 @@
 use crate::config;
 use crate::APP_HANDLE;
 
-#[cfg(target_os = "macos")]
-use cocoa::appkit::NSWindow;
+// #[cfg(target_os = "macos")]
+// use cocoa::appkit::NSWindow;
 
 use debug_print::debug_println;
 use mouse_position::mouse_position::Mouse;
@@ -22,7 +22,7 @@ fn get_dummy_window() -> tauri::Window {
             tauri::WindowBuilder::new(
                 app_handle,
                 "dummy",
-                tauri::WindowUrl::App("src/tauri/dummy.html".into()),
+                tauri::WindowUrl::App("src/dummy.html".into()),
             )
             .title("Dummy")
             .visible(false)
@@ -36,42 +36,42 @@ pub fn show_translator_window(
     center: bool,
     to_mouse_position: bool,
     set_focus: bool,
-) -> tauri::Window {
-    let window = get_translator_window(center, to_mouse_position, set_focus);
+) -> (tauri::Window, bool) {
+    let (window, exist) = get_translator_window(center, to_mouse_position, set_focus);
     window.show().unwrap();
-    window
+    (window, exist)
 }
 
 pub fn get_translator_window(
     center: bool,
     to_mouse_position: bool,
     set_focus: bool,
-) -> tauri::Window {
+) -> (tauri::Window, bool) {
     let current_monitor = get_current_monitor();
     let handle = APP_HANDLE.get().unwrap();
-    let window = match handle.get_window(TRANSLATOR_WIN_NAME) {
+    let (window, exist) = match handle.get_window(TRANSLATOR_WIN_NAME) {
         Some(window) => {
             window.unminimize().unwrap();
             if set_focus {
                 window.set_focus().unwrap();
             }
-            window
+            (window, true)
         }
         None => {
             let builder = tauri::WindowBuilder::new(
                 handle,
                 TRANSLATOR_WIN_NAME,
-                tauri::WindowUrl::App("src/tauri/index.html".into()),
+                tauri::WindowUrl::App("index.html".into()),
             )
             .title("Translator")
             .fullscreen(false)
-            .inner_size(620.0, 700.0)
+            .inner_size(1000.0, 600.0)
             .min_inner_size(540.0, 600.0)
             .resizable(true)
             .skip_taskbar(false)
             .focused(false);
 
-            build_window(builder)
+            (build_window(builder), false)
         }
     };
 
@@ -132,7 +132,7 @@ pub fn get_translator_window(
         window.center().unwrap();
     }
 
-    window
+    (window, exist)
 }
 
 pub fn get_current_monitor() -> tauri::Monitor {
@@ -179,31 +179,31 @@ pub fn get_mouse_location() -> Result<(i32, i32), String> {
     }
 }
 
-pub fn post_process_window<R: tauri::Runtime>(window: &tauri::Window<R>) {
-    // window.set_visible_on_all_workspaces(true).unwrap();
+// pub fn post_process_window<R: tauri::Runtime>(window: &tauri::Window<R>) {
+//     // window.set_visible_on_all_workspaces(true).unwrap();
 
-    let _ = window.current_monitor();
+//     let _ = window.current_monitor();
 
-    #[cfg(target_os = "macos")]
-    {
-        use cocoa::appkit::NSWindowCollectionBehavior;
-        use cocoa::base::id;
-        // Disable the automatic creation of "Show Tab Bar" etc menu items on macOS
-        unsafe {
-            let ns_window = window.ns_window().unwrap() as cocoa::base::id;
-            NSWindow::setAllowsAutomaticWindowTabbing_(ns_window, cocoa::base::NO);
-        }
+//     #[cfg(target_os = "macos")]
+//     {
+//         use cocoa::appkit::NSWindowCollectionBehavior;
+//         use cocoa::base::id;
+//         // Disable the automatic creation of "Show Tab Bar" etc menu items on macOS
+//         unsafe {
+//             let ns_window = window.ns_window().unwrap() as cocoa::base::id;
+//             NSWindow::setAllowsAutomaticWindowTabbing_(ns_window, cocoa::base::NO);
+//         }
 
-        let ns_win = window.ns_window().unwrap() as id;
-        unsafe {
-            let mut collection_behavior = ns_win.collectionBehavior();
-            collection_behavior |=
-                NSWindowCollectionBehavior::NSWindowCollectionBehaviorCanJoinAllSpaces;
+//         let ns_win = window.ns_window().unwrap() as id;
+//         unsafe {
+//             let mut collection_behavior = ns_win.collectionBehavior();
+//             collection_behavior |=
+//                 NSWindowCollectionBehavior::NSWindowCollectionBehaviorCanJoinAllSpaces;
 
-            ns_win.setCollectionBehavior_(collection_behavior);
-        }
-    }
-}
+//             ns_win.setCollectionBehavior_(collection_behavior);
+//         }
+//     }
+// }
 
 pub fn build_window<'a, R: tauri::Runtime>(
     builder: tauri::WindowBuilder<'a, R>,
