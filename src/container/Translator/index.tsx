@@ -2,7 +2,11 @@ import React from "react"
 import { writeText } from "@tauri-apps/api/clipboard"
 import { listen, Event } from "@tauri-apps/api/event"
 import { invoke } from "@tauri-apps/api"
-import { baiduTranslate, tencentTranslate } from "@/api/translate"
+import {
+  azureTranslate,
+  baiduTranslate,
+  tencentTranslate,
+} from "@/api/translate"
 import { useRequest } from "ahooks"
 import CopyIcon from "@/components/CopyIcon"
 import CollapsePanel from "@/components/CollapsePanel"
@@ -10,6 +14,7 @@ import TranslateHeader from "./Header"
 
 const Translator: React.FC = () => {
   const [originText, setOriginText] = React.useState("")
+  const [text, setText] = React.useState("")
   const [srcSelect, setSrcSelect] = React.useState<string>("auto")
   const [destSelect, setDestSelect] = React.useState<string>("zh")
 
@@ -47,11 +52,29 @@ const Translator: React.FC = () => {
     }
   )
 
+  const {
+    data: azureData,
+    loading: azureLoading,
+    run: runAzure,
+  } = useRequest(
+    () =>
+      azureTranslate({
+        content: originText?.trim(),
+        from: srcSelect,
+        to: destSelect,
+      }),
+    {
+      refreshDeps: [originText],
+      ready: !!originText,
+    }
+  )
+
   React.useEffect(() => {
     // 页面新创建的时候，可能没有初始化成功，所以会将数据存储在 Rust，这里初始化的时候去获取
     invoke("get_last_ocr_text").then((text) => {
       if (text) {
         setOriginText(text as string)
+        setText(text as string)
       }
     })
 
@@ -61,6 +84,7 @@ const Translator: React.FC = () => {
         const selectedText = event.payload
         if (selectedText) {
           setOriginText(selectedText)
+          setText(selectedText)
         }
       })
     })()
@@ -70,8 +94,13 @@ const Translator: React.FC = () => {
   }, [])
 
   const onTranslateClick = () => {
-    runBaidu()
-    runTencent()
+    if (text === originText) {
+      runAzure()
+      runBaidu()
+      runTencent()
+    } else {
+      setOriginText(text)
+    }
   }
 
   return (
@@ -82,9 +111,12 @@ const Translator: React.FC = () => {
             {...{ srcSelect, destSelect, setSrcSelect, setDestSelect }}
             onTranslateClick={onTranslateClick}
           ></TranslateHeader>
-          <div className="mt-4 p-4 bg-base-200 rounded flex-1 overflow-y-auto">
-            {originText}
-          </div>
+          <textarea
+            className="textarea mt-4 p-4 bg-base-200 rounded flex-1 overflow-y-auto border-none text-base focus:outline-none focus:ring-0"
+            placeholder="Bio"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          ></textarea>
           <div className="h-12 bg-neutral rounded-b">
             <div className="flex flex-row-reverse">
               <button
@@ -102,6 +134,11 @@ const Translator: React.FC = () => {
 
       <div className="w-6/12 h-full overflow-y-auto">
         <div className="py-4 pl-2 pr-4">
+          <CollapsePanel
+            title="ChatGPT"
+            content={azureData?.data?.result || ""}
+            loading={azureLoading}
+          />
           <CollapsePanel
             title="百度翻译"
             content={baiduData?.data?.result || ""}

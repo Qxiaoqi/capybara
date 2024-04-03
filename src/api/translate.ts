@@ -28,3 +28,14 @@ export const tencentTranslate = async (
   }) as Promise<IResponse>
   return body
 }
+
+export const azureTranslate = async (
+  params: TranslateParams
+): Promise<ITranslateResponse> => {
+  const body = request({
+    url: "translate/azure",
+    method: "POST",
+    data: params,
+  }) as Promise<IResponse>
+  return body
+}

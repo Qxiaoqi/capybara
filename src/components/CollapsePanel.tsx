@@ -20,7 +20,7 @@ const CollapsePanel: React.FC<CollapsePanelProps> = ({
   }
 
   return (
-    <div className="collapse bg-base-200 collapse-arrow rounded mb-4">
+    <div className="collapse bg-base-200 collapse-arrow rounded mb-4 whitespace-pre-line">
       <input type="checkbox" checked={!collapsed} onChange={toggleCollapse} />
       <div
         className="collapse-title text-xl font-medium"
