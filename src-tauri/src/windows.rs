@@ -1,35 +1,76 @@
-use crate::config;
 use crate::APP_HANDLE;
 
 // #[cfg(target_os = "macos")]
 // use cocoa::appkit::NSWindow;
 
-use debug_print::debug_println;
+use log::info;
 use mouse_position::mouse_position::Mouse;
 use tauri::{LogicalPosition, Manager, PhysicalPosition};
 
 pub const TRANSLATOR_WIN_NAME: &str = "translator";
+pub const CONFIG_WIN_NAME: &str = "config";
 
 fn get_dummy_window() -> tauri::Window {
     let app_handle = APP_HANDLE.get().unwrap();
     match app_handle.get_window("dummy") {
         Some(window) => {
-            debug_println!("Dummy window found!");
+            info!("Dummy window found!");
             window
         }
-        None => {
-            debug_println!("Create dummy window!");
-            tauri::WindowBuilder::new(
-                app_handle,
-                "dummy",
-                tauri::WindowUrl::App("src/dummy.html".into()),
-            )
-            .title("Dummy")
-            .visible(false)
-            .build()
-            .unwrap()
-        }
+        None => tauri::WindowBuilder::new(
+            app_handle,
+            "dummy",
+            tauri::WindowUrl::App("src/dummy.html".into()),
+        )
+        .title("Dummy")
+        .visible(false)
+        .build()
+        .unwrap(),
     }
+}
+
+pub fn show_config_window(center: bool, set_focus: bool) -> (tauri::Window, bool) {
+    let (window, exist) = get_config_window(center, set_focus);
+    window.show().unwrap();
+    (window, exist)
+}
+
+fn get_config_window(center: bool, set_focus: bool) -> (tauri::Window, bool) {
+    let app_handle = APP_HANDLE.get().unwrap();
+    let (window, exist) = match app_handle.get_window(CONFIG_WIN_NAME) {
+        Some(window) => {
+            window.unminimize().unwrap();
+            if set_focus {
+                window.set_focus().unwrap();
+            }
+            (window, true)
+        }
+        None => {
+            let builder = tauri::WindowBuilder::new(
+                app_handle,
+                CONFIG_WIN_NAME,
+                tauri::WindowUrl::App("index.html".into()),
+            )
+            .title("Config")
+            .fullscreen(false)
+            .inner_size(1000.0, 600.0)
+            .min_inner_size(540.0, 600.0)
+            .resizable(true)
+            .skip_taskbar(false)
+            .focused(false);
+
+            (build_window(builder), false)
+        }
+    };
+
+    if center {
+        if !cfg!(target_os = "macos") {
+            window.unminimize().unwrap();
+        }
+        window.center().unwrap();
+    }
+
+    (window, exist)
 }
 
 pub fn show_translator_window(
@@ -75,19 +116,7 @@ pub fn get_translator_window(
         }
     };
 
-    let restore_previous_position = match config::get_config() {
-        Ok(config) => config.restore_previous_position.unwrap_or(false),
-        Err(e) => {
-            eprintln!("Error getting config: {}", e);
-            false
-        }
-    };
-
-    if restore_previous_position {
-        if !cfg!(target_os = "macos") {
-            window.unminimize().unwrap();
-        }
-    } else if to_mouse_position {
+    if to_mouse_position {
         let (mouse_logical_x, mouse_logical_y): (i32, i32) = get_mouse_location().unwrap();
         let window_physical_size = window.outer_size().unwrap();
         let scale_factor = window.scale_factor().unwrap_or(1.0);
@@ -119,11 +148,11 @@ pub fn get_translator_window(
         if !cfg!(target_os = "macos") {
             window.unminimize().unwrap();
         }
-        debug_println!("Mouse physical position: {:?}", mouse_physical_position);
-        debug_println!("Monitor physical size: {:?}", monitor_physical_size);
-        debug_println!("Monitor physical position: {:?}", monitor_physical_position);
-        debug_println!("Window physical size: {:?}", window_physical_size);
-        debug_println!("Window physical position: {:?}", window_physical_position);
+        info!("Mouse physical position: {:?}", mouse_physical_position);
+        info!("Monitor physical size: {:?}", monitor_physical_size);
+        info!("Monitor physical position: {:?}", monitor_physical_position);
+        info!("Window physical size: {:?}", window_physical_size);
+        info!("Window physical position: {:?}", window_physical_position);
         window.set_position(window_physical_position).unwrap();
     } else if center {
         if !cfg!(target_os = "macos") {
@@ -211,7 +240,7 @@ pub fn build_window<'a, R: tauri::Runtime>(
     #[cfg(target_os = "macos")]
     {
         let window = builder
-            // .title_bar_style(tauri::TitleBarStyle::Overlay)
+            .title_bar_style(tauri::TitleBarStyle::Overlay)
             .hidden_title(true)
             .build()
             .unwrap();

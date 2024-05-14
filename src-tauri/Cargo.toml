@@ -1,5 +1,5 @@
 [package]
-name = "capybara"
+name = "CapyAssist"
 version = "0.0.0"
 description = "A Tauri App"
 authors = ["you"]
@@ -11,14 +11,16 @@ edition = "2021"
 tauri-build = { version = "1", features = [] }
 
 [dependencies]
-tauri = { version = "1", features = [ "clipboard-all", "shell-open"] }
+tauri = { version = "1", features = [ "window-start-dragging", "global-shortcut-all", "window-minimize", "window-set-always-on-top", "clipboard-all", "shell-open"] }
+tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 once_cell = "1.17.1"
 parking_lot = "0.12.1"
 sysinfo = "0.28.3"
-debug_print = "1.0.0"
 mouse_position = "0.1.3"
+dirs = "5.0.1"
+log = "^0.4"
 
 
 [target.'cfg(target_os = "macos")'.dependencies]

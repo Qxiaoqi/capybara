@@ -1,12 +1,3 @@
-use parking_lot::Mutex;
-
-static LAST_OCR_TEXT: Mutex<String> = Mutex::new(String::new());
-
-#[tauri::command(async)]
-pub fn get_last_ocr_text() -> String {
-    LAST_OCR_TEXT.lock().clone()
-}
-
 #[tauri::command(async)]
 pub fn ocr_command() {
     ocr();
@@ -18,7 +9,7 @@ pub fn ocr() {
 
 #[cfg(target_os = "macos")]
 pub fn do_ocr() -> Result<(), Box<dyn std::error::Error>> {
-    use crate::{APP_HANDLE, CPU_VENDOR};
+    use crate::{APP_HANDLE, CPU_VENDOR, LAST_TRANSLATE_TEXT};
 
     let mut rel_path = "resources/bin/ocr_intel".to_string();
     if *CPU_VENDOR.lock() == "Apple" {
@@ -46,9 +37,9 @@ pub fn do_ocr() -> Result<(), Box<dyn std::error::Error>> {
             window
                 .emit("change-text", content.clone())
                 .unwrap_or_default();
-            *LAST_OCR_TEXT.lock() = String::new();
+            *LAST_TRANSLATE_TEXT.lock() = String::new();
         } else {
-            *LAST_OCR_TEXT.lock() = content;
+            *LAST_TRANSLATE_TEXT.lock() = content;
         }
         Ok(())
     } else {

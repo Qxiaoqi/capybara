@@ -1,6 +1,7 @@
 import React from "react"
-import SwapIcon from "@/components/SwapIcon"
+import SwapIcon from "@/components/Icon/SwapIcon"
 import { LANGUAGE } from "@/utils/language"
+import toast from "react-hot-toast"
 
 interface HeaderProps {
   srcSelect: string
@@ -31,6 +32,7 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleSwapClick = () => {
     if (srcSelect === "auto") {
+      toast.error("自动检测不支持切换为目标语言")
       return
     }
     const temp = srcSelect

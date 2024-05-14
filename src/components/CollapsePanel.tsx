@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { writeText } from "@tauri-apps/api/clipboard"
-import CopyIcon from "./CopyIcon"
+import CopyIcon from "./Icon/CopyIcon"
+import toast from "react-hot-toast"
 
 interface CollapsePanelProps {
   title: string
@@ -46,6 +47,7 @@ const CollapsePanel: React.FC<CollapsePanelProps> = ({
                   className="btn btn-ghost"
                   onClick={() => {
                     writeText(content)
+                    toast.success("复制成功")
                   }}
                 >
                   <CopyIcon className="h-5 w-5" color="#000000" />

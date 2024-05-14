@@ -1,83 +1,42 @@
-use parking_lot::Mutex;
-use tauri::AppHandle;
-
-use serde::{Deserialize, Serialize};
-
 use crate::APP_HANDLE;
+use dirs::config_dir;
+use log::{info, warn};
+use serde_json::{json, Value};
+use std::sync::Mutex;
+use tauri::{Manager, Wry};
+use tauri_plugin_store::{Store, StoreBuilder};
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-#[serde(rename_all = "camelCase")]
-pub struct Config {
-    pub hotkey: Option<String>,
-    pub ocr_hotkey: Option<String>,
-    // pub writing_hotkey: Option<String>,
-    // pub writing_newline_hotkey: Option<String>,
-    pub restore_previous_position: Option<bool>,
-    // pub always_show_icons: Option<bool>,
-    // pub allow_using_clipboard_when_selected_text_not_available: Option<bool>,
-    // pub automatic_check_for_updates: Option<bool>,
-    // pub hide_the_icon_in_the_dock: Option<bool>,
-    // pub proxy: Option<ProxyConfig>,
-}
+pub struct StoreWrapper(pub Mutex<Store<Wry>>);
 
-static CONFIG_CACHE: Mutex<Option<Config>> = Mutex::new(None);
+pub fn init_config(app: &mut tauri::App) {
+    let config_path = config_dir().unwrap();
+    let config_path = config_path.join(app.config().tauri.bundle.identifier.clone());
+    let config_path = config_path.join("config.json");
+    info!("Load config from: {:?}", config_path);
+    let mut store = StoreBuilder::new(app.handle(), config_path).build();
 
-pub fn get_config() -> Result<Config, Box<dyn std::error::Error>> {
-    let app_handle = APP_HANDLE.get().unwrap();
-    get_config_by_app(app_handle)
-}
-
-pub fn get_config_by_app(app: &AppHandle) -> Result<Config, Box<dyn std::error::Error>> {
-    let conf = _get_config_by_app(app);
-    match conf {
-        Ok(conf) => Ok(conf),
+    match store.load() {
+        Ok(_) => info!("Config loaded"),
         Err(e) => {
-            println!("get config failed: {}", e);
-            Err(e)
+            warn!("Config load error: {:?}", e);
+            info!("Config not found, creating new config");
         }
+    }
+    app.manage(StoreWrapper(Mutex::new(store)));
+}
+
+pub fn get(key: &str) -> Option<Value> {
+    let state = APP_HANDLE.get().unwrap().state::<StoreWrapper>();
+    let store = state.0.lock().unwrap();
+    match store.get(key) {
+        Some(value) => Some(value.clone()),
+        None => None,
     }
 }
 
-pub fn _get_config_by_app(app: &AppHandle) -> Result<Config, Box<dyn std::error::Error>> {
-    if let Some(config_cache) = &*CONFIG_CACHE.lock() {
-        return Ok(config_cache.clone());
-    }
-    let config_content = get_config_content_by_app(app)?;
-    let config: Config = serde_json::from_str(&config_content)?;
-    CONFIG_CACHE.lock().replace(config.clone());
-    Ok(config)
-}
-
-// #[tauri::command]
-// pub fn clear_config_cache() {
-//     CONFIG_CACHE.lock().take();
-// }
-
-// #[tauri::command]
-// pub fn get_config_content() -> Result<String, String> {
-//     if let Some(app) = APP_HANDLE.get() {
-//         return get_config_content_by_app(app);
-//     } else {
-//         Err("Config directory not found".to_string())
-//     }
-// }
-
-pub fn get_config_content_by_app(app: &AppHandle) -> Result<String, String> {
-    let app_config_dir = app
-        .path_resolver()
-        .resolve_resource("xyz.graydi.apps.capybara")
-        .unwrap();
-    if !app_config_dir.exists() {
-        std::fs::create_dir_all(&app_config_dir).unwrap();
-    }
-    let config_path = app_config_dir.join("config.json");
-    if config_path.exists() {
-        match std::fs::read_to_string(config_path) {
-            Ok(content) => Ok(content),
-            Err(_) => Err("Failed to read config file".to_string()),
-        }
-    } else {
-        std::fs::write(config_path, "{}").unwrap();
-        Ok("{}".to_string())
-    }
+pub fn set<T: serde::ser::Serialize>(key: &str, value: T) {
+    let state = APP_HANDLE.get().unwrap().state::<StoreWrapper>();
+    let mut store = state.0.lock().unwrap();
+    store.insert(key.to_string(), json!(value)).unwrap();
+    store.save().unwrap();
 }

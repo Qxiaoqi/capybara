@@ -6,11 +6,16 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "capybara",
+    "productName": "CapyAssist",
     "version": "0.0.0"
   },
   "tauri": {
     "allowlist": {
+      "window": {
+        "setAlwaysOnTop": true,
+        "minimize": true,
+        "startDragging": true
+      },
       "shell": {
         "open": true
       },
@@ -18,16 +23,19 @@
         "all": true,
         "writeText": true,
         "readText": true
+      },
+      "globalShortcut": {
+        "all": true
       }
     },
     "windows": [
       {
         "title": "Capybara",
         "resizable": false,
-        "alwaysOnTop": true,
-        "transparent": true,
-        "width": 400,
-        "height": 400
+        "width": 350,
+        "height": 400,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true
       }
     ],
     "security": {
