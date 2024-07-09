@@ -4,6 +4,7 @@ import AboutIcon from "@/components/Icon/AboutIcon"
 import UserIcon from "@/components/Icon/UserIcon"
 import MenuItem from "@/components/MenuItem"
 import About from "./About"
+import User from "./User"
 
 const MenuList = [
   {
@@ -32,13 +33,6 @@ const Config: React.FC = () => {
         data-tauri-drag-region="true"
       />
       <div className="pt-[30px] bg-base-200 fixed h-full">
-        {/* <div className="px-6 py-4">
-          <div className="avatar">
-            <div className="w-24 rounded-xl bg-base-300">
-              <img src="" />
-            </div>
-          </div>
-        </div> */}
         <ul className="menu bg-base-200 w-56 rounded-box">
           {MenuList.map((item) => (
             <MenuItem
@@ -59,6 +53,7 @@ const Config: React.FC = () => {
           </a>
         </div>
         <div className="h-[calc(100vh-64px)] overflow-y-auto">
+          {selected === "personal" && <User />}
           {selected === "about" && <About />}
         </div>
       </div>

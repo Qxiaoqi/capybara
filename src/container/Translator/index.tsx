@@ -26,6 +26,7 @@ const Translator: React.FC = () => {
 
   const {
     data: baiduData,
+    error: baiduError,
     loading: baiduLoading,
     run: runBaidu,
   } = useRequest(
@@ -42,6 +43,7 @@ const Translator: React.FC = () => {
 
   const {
     data: tencentData,
+    error: tencentError,
     loading: tencentLoading,
     run: runTencent,
   } = useRequest(
@@ -58,6 +60,7 @@ const Translator: React.FC = () => {
 
   const {
     data: azureData,
+    error: azureError,
     loading: azureLoading,
     run: runAzure,
   } = useRequest(
@@ -159,17 +162,17 @@ const Translator: React.FC = () => {
           <div className="py-4 pl-2 pr-4">
             <CollapsePanel
               title="ChatGPT"
-              content={azureData?.data?.result || ""}
+              content={azureError?.message || azureData?.data?.result || ""}
               loading={azureLoading}
             />
             <CollapsePanel
               title="百度翻译"
-              content={baiduData?.data?.result || ""}
+              content={baiduError?.message || baiduData?.data?.result || ""}
               loading={baiduLoading}
             />
             <CollapsePanel
               title="腾讯翻译"
-              content={tencentData?.data?.result || ""}
+              content={tencentError?.message || tencentData?.data?.result || ""}
               loading={tencentLoading}
             />
           </div>

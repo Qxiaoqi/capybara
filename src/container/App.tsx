@@ -8,9 +8,24 @@ import InputIcon from "@/components/Icon/InputIcon"
 import ClipboardIcon from "@/components/Icon/ClipboardIcon"
 import PinIcon from "@/components/Icon/PinIcon"
 import PinFillIcon from "@/components/Icon/PinFillIcon"
+import { useLocalStorageState, useRequest } from "ahooks"
+import { getProfile } from "@/api/user"
 
 const App: React.FC = () => {
+  const [accessToken] = useLocalStorageState<string | undefined>(
+    "accessToken",
+    {
+      listenStorageChange: true,
+      serializer: (v) => v ?? "",
+      deserializer: (v) => v,
+    }
+  )
+
   const [pined, setPined] = React.useState<boolean>(false)
+
+  const { loading: getProfileLoading, data: profile } = useRequest(getProfile, {
+    ready: !!accessToken,
+  })
 
   async function screen() {
     invoke("ocr_command")
@@ -53,11 +68,26 @@ const App: React.FC = () => {
       <div className="flex flex-col justify-between h-[calc(100vh-30px)] bg-white">
         <div className="p-4 bg-white">
           <div className="flex items-center mb-4 justify-between">
-            <div className="avatar placeholder flex items-center">
-              <div className="bg-neutral text-neutral-content rounded-full w-8 mr-2">
-                <span className="text-xl">D</span>
-              </div>
-              <span className="font-bold">Huidi</span>
+            <div className="flex items-center">
+              {!!accessToken ? (
+                <>
+                  <div className="badge badge-neutral font-bold">已登陆</div>
+                  {getProfileLoading ? (
+                    <span className="loading loading-ring loading-sm"></span>
+                  ) : (
+                    <span className="font-bold ml-2">
+                      {profile?.data?.email}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <div
+                  className="badge badge-ghost font-bold cursor-pointer"
+                  onClick={openConfig}
+                >
+                  未登陆
+                </div>
+              )}
             </div>
           </div>
           <div className="flex justify-center items-center mb-4">
