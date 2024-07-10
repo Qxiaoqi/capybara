@@ -1,6 +1,8 @@
 import axios from "axios"
 import toast from "react-hot-toast"
 
+let hasShownTokenError = false
+
 const request = axios.create({
   baseURL: "http://localhost:3000/api/",
 })
@@ -25,7 +27,13 @@ request.interceptors.response.use(
       } else if (errorMessage === "Invalid verification token") {
         toast.error("验证码错误")
       } else if (errorMessage === "Token not found") {
-        toast("请先登录", { icon: "🔒" })
+        if (!hasShownTokenError) {
+          toast("请先登录", { icon: "🔒" })
+          hasShownTokenError = true
+          setTimeout(() => {
+            hasShownTokenError = false
+          }, 4000) // 重置状态，防止重复提示
+        }
       } else if (errorMessage === "Token invalid") {
         toast("登录失效，请重新登录", { icon: "🔒" })
       } else if (errorMessage === "User not found") {
