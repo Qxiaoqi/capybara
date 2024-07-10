@@ -1,10 +1,12 @@
 import React from "react"
 import { Toaster } from "react-hot-toast"
+// import RechargeIcon from "@/components/Icon/RechargeIcon"
 import AboutIcon from "@/components/Icon/AboutIcon"
 import UserIcon from "@/components/Icon/UserIcon"
 import MenuItem from "@/components/MenuItem"
 import About from "./About"
 import User from "./User"
+// import Recharge from "./Recharge"
 
 const MenuList = [
   {
@@ -12,6 +14,11 @@ const MenuList = [
     title: "个人信息",
     icon: UserIcon,
   },
+  // {
+  //   id: "recharge",
+  //   title: "点数充值",
+  //   icon: RechargeIcon,
+  // },
   {
     id: "about",
     title: "关于应用",
@@ -55,6 +62,7 @@ const Config: React.FC = () => {
         <div className="h-[calc(100vh-64px)] overflow-y-auto">
           {selected === "personal" && <User />}
           {selected === "about" && <About />}
+          {/* {selected === "recharge" && <Recharge />} */}
         </div>
       </div>
       <Toaster />
