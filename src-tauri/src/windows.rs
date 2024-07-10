@@ -53,7 +53,7 @@ fn get_config_window(center: bool, set_focus: bool) -> (tauri::Window, bool) {
             )
             .title("Config")
             .fullscreen(false)
-            .inner_size(1000.0, 600.0)
+            .inner_size(1000.0, 620.0)
             .min_inner_size(540.0, 600.0)
             .resizable(true)
             .skip_taskbar(false)
