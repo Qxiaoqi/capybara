@@ -8,7 +8,7 @@ const About: React.FC = () => {
     <div className="h-[calc(100vh-64px)] overflow-y-auto">
       <div className="flex flex-col items-center h-full">
         <div className="w-48 h-48 rounded-xl">
-          <img src="src/assets/logo2.png" className="rounded-xl" />
+          <img src="/logo2.png" className="rounded-xl" />
         </div>
         <h1 className="text-2xl mt-4">{appVersion?.name || "CapyAssist"}</h1>
         <h3 className="text-slate-500	">v{appVersion?.version}</h3>

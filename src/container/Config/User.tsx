@@ -86,7 +86,7 @@ const User: React.FC = () => {
               <div className="w-28 h-28 rounded-full bg-neutral p-2">
                 <div className="avatar">
                   <div className="w-24 h-24">
-                    <img src="src/assets/face-kiss.png" />
+                    <img src="/face-kiss.png" />
                   </div>
                 </div>
               </div>
