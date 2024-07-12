@@ -3,8 +3,11 @@ import toast from "react-hot-toast"
 
 let hasShownTokenError = false
 
+const LIVE_URL = "http://49.232.218.10:3001/api/"
+const DEV_URL = "http://localhost:3000/api/"
+
 const request = axios.create({
-  baseURL: "http://localhost:3000/api/",
+  baseURL: LIVE_URL,
 })
 
 request.interceptors.request.use((config) => {
