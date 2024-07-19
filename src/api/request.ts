@@ -4,7 +4,7 @@ import toast from "react-hot-toast"
 let hasShownTokenError = false
 
 const REQUEST_URL = {
-  LIVE_URL: "http://49.232.218.10:3001/api/",
+  LIVE_URL: "https://capybara-translate.cn/api/",
   DEV_URL: "http://localhost:3000/api/",
 }
 
