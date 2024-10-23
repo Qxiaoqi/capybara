@@ -9,6 +9,7 @@ use tauri::{LogicalPosition, Manager, PhysicalPosition};
 
 pub const TRANSLATOR_WIN_NAME: &str = "translator";
 pub const CONFIG_WIN_NAME: &str = "config";
+#[cfg(target_os = "windows")]
 pub const SCREENSHOT_WIN_NAME: &str = "screenshot";
 
 fn get_dummy_window() -> tauri::Window {
@@ -261,11 +262,13 @@ pub fn build_window<'a, R: tauri::Runtime>(
     }
 }
 
+#[cfg(target_os = "windows")]
 pub fn show_screenshot_window() {
     let _ = get_screenshot_window();
     // window.show().unwrap();
 }
 
+#[cfg(target_os = "windows")]
 pub fn get_screenshot_window() -> tauri::Window {
     let handle = APP_HANDLE.get().unwrap();
     let current_monitor = get_current_monitor();

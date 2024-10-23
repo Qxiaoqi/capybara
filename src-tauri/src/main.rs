@@ -11,10 +11,9 @@ mod windows;
 
 use crate::clipboard::clipboard_command;
 use crate::hotkey::register_shortcut_by_frontend;
-use crate::ocr::ocr_command;
+use crate::ocr::{cut_image, finish_ocr, ocr_command, screenshot};
 use crate::text::{get_last_translate_text, text_command};
 use crate::user::open_config_command;
-use crate::ocr::{screenshot, cut_image, finish_ocr};
 
 use config::init_config;
 use hotkey::register_shortcut;

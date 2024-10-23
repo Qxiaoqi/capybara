@@ -1,4 +1,5 @@
 use log::info;
+#[cfg(target_os = "windows")]
 use std::path::Path;
 
 #[tauri::command(async)]
@@ -135,6 +136,9 @@ fn do_finish_ocr() {
     do_ocr_with_cut_file_path(&image_file_path);
 }
 
+#[cfg(target_os = "macos")]
+fn do_finish_ocr() {}
+
 #[cfg(target_os = "windows")]
 pub fn do_ocr_with_cut_file_path(image_file_path: &Path) {
     use crate::LAST_TRANSLATE_TEXT;
@@ -178,9 +182,7 @@ pub fn do_ocr_with_cut_file_path(image_file_path: &Path) {
 
             let (window, exist) = crate::windows::show_translator_window(false, false, true);
             if exist {
-                window
-                    .emit("change-text", content)
-                    .unwrap_or_default();
+                window.emit("change-text", content).unwrap_or_default();
                 *LAST_TRANSLATE_TEXT.lock() = String::new();
             } else {
                 *LAST_TRANSLATE_TEXT.lock() = content;
