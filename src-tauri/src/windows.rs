@@ -9,6 +9,7 @@ use tauri::{LogicalPosition, Manager, PhysicalPosition};
 
 pub const TRANSLATOR_WIN_NAME: &str = "translator";
 pub const CONFIG_WIN_NAME: &str = "config";
+pub const SCREENSHOT_WIN_NAME: &str = "screenshot";
 
 fn get_dummy_window() -> tauri::Window {
     let app_handle = APP_HANDLE.get().unwrap();
@@ -258,4 +259,54 @@ pub fn build_window<'a, R: tauri::Runtime>(
 
         window
     }
+}
+
+pub fn show_screenshot_window() {
+    let _ = get_screenshot_window();
+    // window.show().unwrap();
+}
+
+pub fn get_screenshot_window() -> tauri::Window {
+    let handle = APP_HANDLE.get().unwrap();
+    let current_monitor = get_current_monitor();
+    let dpi = current_monitor.scale_factor();
+    let physical_position = current_monitor.position();
+    let position: tauri::LogicalPosition<f64> = physical_position.to_logical(dpi);
+
+    let window = match handle.get_window(SCREENSHOT_WIN_NAME) {
+        Some(window) => {
+            window.set_focus().unwrap();
+            window
+        }
+        None => {
+            let builder = tauri::WindowBuilder::new(
+                handle,
+                SCREENSHOT_WIN_NAME,
+                tauri::WindowUrl::App("index.html".into()),
+            )
+            .title("Capybara Translate Screenshot")
+            .position(position.x, position.y)
+            .visible(false)
+            .focused(true);
+
+            let window = build_window(builder);
+            window
+        }
+    };
+
+    window.set_resizable(false).unwrap();
+    window.set_skip_taskbar(true).unwrap();
+    #[cfg(target_os = "macos")]
+    {
+        let size = current_monitor.size();
+        window.set_decorations(false).unwrap();
+        window.set_size(*size).unwrap();
+    }
+
+    #[cfg(not(target_os = "macos"))]
+    window.set_fullscreen(true).unwrap();
+
+    window.set_always_on_top(true).unwrap();
+
+    window
 }

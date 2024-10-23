@@ -14,6 +14,7 @@ use crate::hotkey::register_shortcut_by_frontend;
 use crate::ocr::ocr_command;
 use crate::text::{get_last_translate_text, text_command};
 use crate::user::open_config_command;
+use crate::ocr::{screenshot, cut_image, finish_ocr};
 
 use config::init_config;
 use hotkey::register_shortcut;
@@ -56,7 +57,10 @@ fn main() {
             text_command,
             clipboard_command,
             register_shortcut_by_frontend,
-            open_config_command
+            open_config_command,
+            screenshot,
+            cut_image,
+            finish_ocr
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

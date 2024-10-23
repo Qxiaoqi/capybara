@@ -12,9 +12,7 @@
   "tauri": {
     "allowlist": {
       "window": {
-        "setAlwaysOnTop": true,
-        "minimize": true,
-        "startDragging": true
+        "all": true
       },
       "shell": {
         "open": true
@@ -26,6 +24,16 @@
       },
       "globalShortcut": {
         "all": true
+      },
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "scope": ["**", "$CACHE/**", "$CONFIG/**", "$APPCACHE/**"]
+      },
+      "protocol": {
+        "asset": true,
+        "assetScope": ["**", "$CACHE/**", "$CONFIG/**", "$APPCACHE/**"]
       }
     },
     "windows": [
@@ -38,9 +46,6 @@
         "hiddenTitle": true
       }
     ],
-    "security": {
-      "csp": null
-    },
     "bundle": {
       "active": true,
       "targets": "all",
