@@ -10,7 +10,9 @@ const About: React.FC = () => {
         <div className="w-48 h-48 rounded-xl">
           <img src="/logo2.png" className="rounded-xl" />
         </div>
-        <h1 className="text-2xl mt-4">{appVersion?.name || "CapyAssist"}</h1>
+        <h1 className="text-2xl mt-4">
+          {appVersion?.name || "CapyAssist"}（内测版）
+        </h1>
         <h3 className="text-slate-500	">v{appVersion?.version}</h3>
         <p className="text-base w-8/12 text-center mt-4">
           一款多平台翻译软件，支持 OCR 识别翻译，并且内置 GPT

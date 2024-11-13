@@ -101,7 +101,7 @@ const User: React.FC = () => {
               </button>
             </div>
             <div className="stats shadow">
-              <div className="stat place-items-center">
+              {/* <div className="stat place-items-center">
                 <div className="stat-title">今日调用次数</div>
                 {getOverviewLoading ? (
                   <span className="loading loading-ring loading-sm"></span>
@@ -109,9 +109,9 @@ const User: React.FC = () => {
                   <div className="stat-value">{overview?.data?.usageCount}</div>
                 )}
                 <div className="stat-desc">调用 GPT 次数</div>
-              </div>
+              </div> */}
 
-              <div className="stat place-items-center">
+              {/* <div className="stat place-items-center">
                 <div className="stat-title">今日消耗点数</div>
                 {getOverviewLoading ? (
                   <span className="loading loading-ring loading-sm"></span>
@@ -121,7 +121,7 @@ const User: React.FC = () => {
                   </div>
                 )}
                 <div className="stat-desc">保留两位小数</div>
-              </div>
+              </div> */}
 
               <div className="stat place-items-center">
                 <div className="stat-title">剩余点数</div>

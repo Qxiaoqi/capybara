@@ -39,3 +39,14 @@ export const azureTranslate = async (
   }) as Promise<IResponse>
   return body
 }
+
+export const qwenTranslate = async (
+  params: TranslateParams
+): Promise<ITranslateResponse> => {
+  const body = request({
+    url: "translate/qwen",
+    method: "POST",
+    data: params,
+  }) as Promise<IResponse>
+  return body
+}

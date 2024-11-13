@@ -5,6 +5,7 @@ import { invoke } from "@tauri-apps/api"
 import {
   azureTranslate,
   baiduTranslate,
+  qwenTranslate,
   tencentTranslate,
 } from "@/api/translate"
 import { useRequest } from "ahooks"
@@ -59,13 +60,13 @@ const Translator: React.FC = () => {
   )
 
   const {
-    data: azureData,
-    error: azureError,
-    loading: azureLoading,
-    run: runAzure,
+    data: qwenData,
+    error: qwenError,
+    loading: qwenLoading,
+    run: runQwen,
   } = useRequest(
     () =>
-      azureTranslate({
+      qwenTranslate({
         content: originText?.trim(),
         from: srcSelect,
         to: destSelect,
@@ -74,6 +75,23 @@ const Translator: React.FC = () => {
       refreshDeps: [originText],
     }
   )
+
+  // const {
+  //   data: azureData,
+  //   error: azureError,
+  //   loading: azureLoading,
+  //   run: runAzure,
+  // } = useRequest(
+  //   () =>
+  //     azureTranslate({
+  //       content: originText?.trim(),
+  //       from: srcSelect,
+  //       to: destSelect,
+  //     }),
+  //   {
+  //     refreshDeps: [originText],
+  //   }
+  // )
 
   React.useEffect(() => {
     // 页面新创建的时候，可能没有初始化成功，所以会将数据存储在 Rust，这里初始化的时候去获取
@@ -99,7 +117,8 @@ const Translator: React.FC = () => {
 
   const onTranslateClick = () => {
     if (text === originText) {
-      runAzure()
+      // runAzure()
+      runQwen()
       runBaidu()
       runTencent()
     } else {
@@ -161,10 +180,15 @@ const Translator: React.FC = () => {
         <div className="w-6/12 h-full overflow-y-auto">
           <div className="py-4 pl-2 pr-4">
             <CollapsePanel
+              title="通义千问"
+              content={qwenError?.message || qwenData?.data?.result || ""}
+              loading={qwenLoading}
+            />
+            {/* <CollapsePanel
               title="ChatGPT"
               content={azureError?.message || azureData?.data?.result || ""}
               loading={azureLoading}
-            />
+            /> */}
             <CollapsePanel
               title="百度翻译"
               content={baiduError?.message || baiduData?.data?.result || ""}
