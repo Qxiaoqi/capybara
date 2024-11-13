@@ -3,7 +3,7 @@ import { writeText } from "@tauri-apps/api/clipboard"
 import { listen, Event } from "@tauri-apps/api/event"
 import { invoke } from "@tauri-apps/api"
 import {
-  azureTranslate,
+  // azureTranslate,
   baiduTranslate,
   qwenTranslate,
   tencentTranslate,

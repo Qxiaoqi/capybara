@@ -1,4 +1,4 @@
-import { getOverview } from "@/api/analyze"
+// import { getOverview } from "@/api/analyze"
 import { getProfile, login, verify } from "@/api/user"
 import { useLocalStorageState, useRequest } from "ahooks"
 import React from "react"
@@ -32,12 +32,12 @@ const User: React.FC = () => {
   const { loading: getProfileLoading, data: profile } = useRequest(getProfile, {
     ready: !!accessToken,
   })
-  const { loading: getOverviewLoading, data: overview } = useRequest(
-    getOverview,
-    {
-      ready: !!accessToken,
-    }
-  )
+  // const { loading: getOverviewLoading, data: overview } = useRequest(
+  //   getOverview,
+  //   {
+  //     ready: !!accessToken,
+  //   }
+  // )
 
   const clickLogin = async () => {
     if (!email) {
