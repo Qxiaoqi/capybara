@@ -4,7 +4,9 @@ import { getCurrent } from "@tauri-apps/api/window"
 import Index from "./container/App"
 import Translator from "./container/Translator"
 import Config from "./container/Config"
-import { ScreenshotWindow } from './container/Screenshot'
+import { ScreenshotWindow } from "./container/Screenshot"
+import { initEnv } from "./utils/env"
+import { initStore } from "./utils/store"
 
 import "./styles.css"
 import "./style/tailwind.global.css"
@@ -25,6 +27,13 @@ function App() {
     </React.StrictMode>
   )
 }
+
+initStore().then(async () => {
+  await initEnv()
+  ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+    <App />
+  )
+})
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <App />

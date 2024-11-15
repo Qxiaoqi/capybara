@@ -1,6 +1,7 @@
 use crate::clipboard::clipboard;
 use crate::config::{get, set};
 use crate::ocr::ocr;
+use crate::selection::selection;
 use crate::text::text;
 use crate::APP_HANDLE;
 use log::{info, warn};
@@ -45,20 +46,19 @@ where
 pub fn register_shortcut(shortcut: &str) -> Result<(), String> {
     let app_handle = APP_HANDLE.get().unwrap();
     match shortcut {
+        "hotkey_selection_translate" => {
+            register(app_handle, "hotkey_selection_translate", selection, "")?
+        }
         "hotkey_clipboard_translate" => {
             register(app_handle, "hotkey_clipboard_translate", clipboard, "")?
         }
         "hotkey_input_translate" => register(app_handle, "hotkey_input_translate", text, "")?,
         "hotkey_ocr_translate" => register(app_handle, "hotkey_ocr_translate", ocr, "")?,
         "all" => {
-            register(
-                app_handle,
-                "hotkey_clipboard_translate",
-                clipboard,
-                "Ctrl+A",
-            )?;
-            register(app_handle, "hotkey_input_translate", text, "Ctrl+D")?;
-            register(app_handle, "hotkey_ocr_translate", ocr, "Ctrl+S")?;
+            register(app_handle, "hotkey_selection_translate", selection, "")?;
+            register(app_handle, "hotkey_clipboard_translate", clipboard, "")?;
+            register(app_handle, "hotkey_input_translate", text, "")?;
+            register(app_handle, "hotkey_ocr_translate", ocr, "")?;
         }
         _ => {}
     }
@@ -69,6 +69,12 @@ pub fn register_shortcut(shortcut: &str) -> Result<(), String> {
 pub fn register_shortcut_by_frontend(name: &str, shortcut: &str) -> Result<(), String> {
     let app_handle = APP_HANDLE.get().unwrap();
     match name {
+        "hotkey_selection_translate" => register(
+            app_handle,
+            "hotkey_selection_translate",
+            selection,
+            shortcut,
+        )?,
         "hotkey_clipboard_translate" => register(
             app_handle,
             "hotkey_clipboard_translate",

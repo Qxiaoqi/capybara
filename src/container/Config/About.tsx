@@ -18,6 +18,9 @@ const About: React.FC = () => {
           一款多平台翻译软件，支持 OCR 识别翻译，并且内置 GPT
           翻译服务，努力成为您最好的办公助手!
         </p>
+        <p className="text-base w-8/12 text-center mt-4 text-slate-500 text-[14px]">
+          (由于内测版本的费用由我承担，因此如果超出限额可能会调用失败，敬请谅解)
+        </p>
       </div>
     </div>
   )

@@ -4,8 +4,10 @@ import { Toaster } from "react-hot-toast"
 import AboutIcon from "@/components/Icon/AboutIcon"
 import UserIcon from "@/components/Icon/UserIcon"
 import MenuItem from "@/components/MenuItem"
+import KeyboardIcon from "@/components/Icon/KeyboardIcon"
 import About from "./About"
 import User from "./User"
+import Keyboard from "./Keyboard"
 // import Recharge from "./Recharge"
 
 const MenuList = [
@@ -19,6 +21,11 @@ const MenuList = [
   //   title: "点数充值",
   //   icon: RechargeIcon,
   // },
+  {
+    id: "setting",
+    title: "热键设置",
+    icon: KeyboardIcon,
+  },
   {
     id: "about",
     title: "关于应用",
@@ -61,6 +68,7 @@ const Config: React.FC = () => {
         </div>
         <div className="h-[calc(100vh-64px)] overflow-y-auto">
           {selected === "personal" && <User />}
+          {selected === "setting" && <Keyboard />}
           {selected === "about" && <About />}
           {/* {selected === "recharge" && <Recharge />} */}
         </div>

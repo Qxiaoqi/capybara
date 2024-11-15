@@ -5,6 +5,7 @@ mod clipboard;
 mod config;
 mod hotkey;
 mod ocr;
+mod selection;
 mod text;
 mod user;
 mod windows;
@@ -12,10 +13,11 @@ mod windows;
 use crate::clipboard::clipboard_command;
 use crate::hotkey::register_shortcut_by_frontend;
 use crate::ocr::{cut_image, finish_ocr, ocr_command, screenshot};
+use crate::selection::selection_command;
 use crate::text::{get_last_translate_text, text_command};
 use crate::user::open_config_command;
 
-use config::init_config;
+use config::{init_config, reload_store};
 use hotkey::register_shortcut;
 use log::warn;
 use once_cell::sync::OnceCell;
@@ -36,6 +38,8 @@ fn main() {
     }
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_store::Builder::default().build())
+        .plugin(tauri_plugin_fs_watch::init())
         .setup(move |app| {
             APP_HANDLE.get_or_init(|| app.handle().clone());
             // Init Config
@@ -51,10 +55,12 @@ fn main() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            reload_store,
             ocr_command,
             get_last_translate_text,
             text_command,
             clipboard_command,
+            selection_command,
             register_shortcut_by_frontend,
             open_config_command,
             screenshot,

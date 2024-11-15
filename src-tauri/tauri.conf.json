@@ -41,7 +41,7 @@
         "title": "Capybara",
         "resizable": false,
         "width": 350,
-        "height": 400,
+        "height": 500,
         "titleBarStyle": "Overlay",
         "hiddenTitle": true
       }

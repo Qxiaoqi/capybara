@@ -10,6 +10,8 @@ import PinIcon from "@/components/Icon/PinIcon"
 import PinFillIcon from "@/components/Icon/PinFillIcon"
 import { useLocalStorageState, useRequest } from "ahooks"
 import { getProfile } from "@/api/user"
+import { useConfig } from "@/hooks/useConfig"
+import PencilIcon from "@/components/Icon/PencilIcon"
 
 const App: React.FC = () => {
   const [accessToken] = useLocalStorageState<string | undefined>(
@@ -20,6 +22,10 @@ const App: React.FC = () => {
       deserializer: (v) => v,
     }
   )
+  const [inputTranslate] = useConfig("hotkey_input_translate", "")
+  const [ocrTranslate] = useConfig("hotkey_ocr_translate", "")
+  const [clipboardTranslate] = useConfig("hotkey_clipboard_translate", "")
+  const [selectionTranslate] = useConfig("hotkey_selection_translate", "")
 
   const [pined, setPined] = React.useState<boolean>(false)
 
@@ -37,6 +43,10 @@ const App: React.FC = () => {
 
   async function clipboard() {
     invoke("clipboard_command")
+  }
+
+  async function selection() {
+    invoke("selection_command")
   }
 
   async function openConfig() {
@@ -92,7 +102,7 @@ const App: React.FC = () => {
           </div>
           <div className="flex justify-center items-center mb-4">
             <div
-              className="rounded flex-1 mr-2 cursor-pointer border-gray-200 border-4 border-dashed flex flex-col items-center p-4"
+              className="rounded flex-1 mr-2 cursor-pointer border-gray-200 border-4 border-dashed flex flex-col items-center p-4 h-24 justify-center"
               onClick={textTranslate}
             >
               <div className="mb-2 font-bold flex items-center">
@@ -100,12 +110,13 @@ const App: React.FC = () => {
                 文本翻译
               </div>
               <div>
-                <kbd className="kbd kbd-sm">Ctrl</kbd> <span>+</span>{" "}
-                <kbd className="kbd kbd-sm">D</kbd>
+                {inputTranslate && (
+                  <kbd className="kbd kbd-sm">{inputTranslate}</kbd>
+                )}
               </div>
             </div>
             <div
-              className="rounded flex-1 mr-2 cursor-pointer border-gray-200 border-4 border-dashed flex flex-col items-center p-4"
+              className="rounded flex-1 mr-2 cursor-pointer border-gray-200 border-4 border-dashed flex flex-col items-center p-4 h-24 justify-center"
               onClick={clipboard}
             >
               <div className="mb-2 font-bold flex items-center">
@@ -113,14 +124,15 @@ const App: React.FC = () => {
                 剪贴板翻译
               </div>
               <div>
-                <kbd className="kbd kbd-sm">Ctrl</kbd> <span>+</span>{" "}
-                <kbd className="kbd kbd-sm">A</kbd>
+                {clipboardTranslate && (
+                  <kbd className="kbd kbd-sm">{clipboardTranslate}</kbd>
+                )}
               </div>
             </div>
           </div>
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center mb-4">
             <div
-              className="rounded flex-1 mr-2 cursor-pointer border-gray-200 border-4 border-dashed flex flex-col items-center p-4"
+              className="rounded flex-1 mr-2 cursor-pointer border-gray-200 border-4 border-dashed flex flex-col items-center p-4 h-24 justify-center"
               onClick={screen}
             >
               <div className="mb-2 font-bold flex items-center">
@@ -128,8 +140,27 @@ const App: React.FC = () => {
                 截图 OCR 翻译
               </div>
               <div>
-                <kbd className="kbd kbd-sm">Ctrl</kbd> <span>+</span>{" "}
-                <kbd className="kbd kbd-sm">S</kbd>
+                {ocrTranslate && (
+                  <kbd className="kbd kbd-sm">{ocrTranslate}</kbd>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-center items-center">
+            <div
+              className="rounded flex-1 mr-2 cursor-pointer border-gray-200 border-4 border-dashed flex flex-col items-center p-4 h-24 justify-center"
+              onClick={selection}
+            >
+              <div className="mb-2 font-bold flex items-center">
+                <PencilIcon className="mr-1" />
+                划词翻译
+              </div>
+              <div>
+                {selectionTranslate ? (
+                  <kbd className="kbd kbd-sm">{selectionTranslate}</kbd>
+                ) : (
+                  <kbd className="kbd kbd-sm">请设置快捷键后使用</kbd>
+                )}
               </div>
             </div>
           </div>
