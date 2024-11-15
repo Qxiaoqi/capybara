@@ -10,6 +10,7 @@ use tauri::{LogicalPosition, Manager, PhysicalPosition};
 #[cfg(target_os = "windows")]
 use window_shadows::set_shadow;
 
+pub const MAIN_WIN_NAME: &str = "main";
 pub const TRANSLATOR_WIN_NAME: &str = "translator";
 pub const CONFIG_WIN_NAME: &str = "config";
 #[cfg(target_os = "windows")]
@@ -32,6 +33,49 @@ fn get_dummy_window() -> tauri::Window {
         .build()
         .unwrap(),
     }
+}
+
+pub fn show_main_window(center: bool, set_focus: bool) -> (tauri::Window, bool) {
+    let (window, exist) = get_main_window(center, set_focus);
+    window.show().unwrap();
+    (window, exist)
+}
+
+fn get_main_window(center: bool, set_focus: bool) -> (tauri::Window, bool) {
+    let app_handle = APP_HANDLE.get().unwrap();
+    let (window, exist) = match app_handle.get_window(MAIN_WIN_NAME) {
+        Some(window) => {
+            window.unminimize().unwrap();
+            if set_focus {
+                window.set_focus().unwrap();
+            }
+            (window, true)
+        }
+        None => {
+            let builder = tauri::WindowBuilder::new(
+                app_handle,
+                MAIN_WIN_NAME,
+                tauri::WindowUrl::App("index.html".into()),
+            )
+            .title("Config")
+            .fullscreen(false)
+            .inner_size(350.0, 500.0)
+            .resizable(true)
+            .skip_taskbar(false)
+            .focused(false);
+
+            (build_window(builder), false)
+        }
+    };
+
+    if center {
+        if !cfg!(target_os = "macos") {
+            window.unminimize().unwrap();
+        }
+        window.center().unwrap();
+    }
+
+    (window, exist)
 }
 
 pub fn show_config_window(center: bool, set_focus: bool) -> (tauri::Window, bool) {
@@ -257,7 +301,11 @@ pub fn build_window<'a, R: tauri::Runtime>(
 
     #[cfg(not(target_os = "macos"))]
     {
-        let window = builder.transparent(true).decorations(false).build().unwrap();
+        let window = builder
+            .transparent(true)
+            .decorations(false)
+            .build()
+            .unwrap();
         set_shadow(&window, true).unwrap_or_default();
 
         // post_process_window(&window);

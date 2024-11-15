@@ -45,6 +45,8 @@ fn main() {
             // Init Config
             init_config(app);
 
+            crate::windows::show_main_window(false, true);
+
             // Register Global Shortcut
             match register_shortcut("all") {
                 Ok(()) => {}

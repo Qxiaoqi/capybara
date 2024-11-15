@@ -39,17 +39,7 @@
         "assetScope": ["**", "$CACHE/**", "$CONFIG/**", "$APPCACHE/**"]
       }
     },
-    "windows": [
-      {
-        "title": "Capybara",
-        "resizable": false,
-        "width": 350,
-        "height": 500,
-        "titleBarStyle": "Overlay",
-        "decorations": false,
-        "hiddenTitle": true
-      }
-    ],
+    "windows": [],
     "bundle": {
       "active": true,
       "targets": "all",
