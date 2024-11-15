@@ -35,6 +35,3 @@ initStore().then(async () => {
   )
 })
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <App />
-)

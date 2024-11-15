@@ -31,6 +31,9 @@
       "fs": {
         "scope": ["**", "$CACHE/**", "$CONFIG/**", "$APPCACHE/**"]
       },
+      "os": {
+        "all": true
+      },
       "protocol": {
         "asset": true,
         "assetScope": ["**", "$CACHE/**", "$CONFIG/**", "$APPCACHE/**"]
@@ -43,6 +46,7 @@
         "width": 350,
         "height": 500,
         "titleBarStyle": "Overlay",
+        "decorations": false,
         "hiddenTitle": true
       }
     ],

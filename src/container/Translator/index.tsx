@@ -14,8 +14,10 @@ import CollapsePanel from "@/components/CollapsePanel"
 import TranslateHeader from "./Header"
 import toast, { Toaster } from "react-hot-toast"
 import PinFillIcon from "@/components/Icon/PinFillIcon"
+import WinCloseIcon from "@/components/Icon/WinCloseIcon"
 import PinIcon from "@/components/Icon/PinIcon"
 import { appWindow } from "@tauri-apps/api/window"
+import { osType } from "@/utils/env"
 
 const Translator: React.FC = () => {
   const [pined, setPined] = React.useState<boolean>(false)
@@ -127,12 +129,12 @@ const Translator: React.FC = () => {
   }
 
   return (
-    <>
+    <div>
       <div
         className="fixed top-[0px] left-[5px] right-[5px] h-[35px]"
         data-tauri-drag-region="true"
       />
-      <div className="h-[30px] flex flex-row-reverse mr-[5px]">
+      <div className={`h-[30px] px-1 flex items-center mr-[5px] ${osType === 'Darwin' ? 'justify-end' : 'justify-between'}`}>
         <label className="swap">
           <input
             type="checkbox"
@@ -147,6 +149,11 @@ const Translator: React.FC = () => {
           <PinFillIcon className="swap-on" />
           <PinIcon className="swap-off" />
         </label>
+        <div className={`relative cursor-pointer ${osType === 'Darwin' && 'hidden'}`} onClick={() => {
+          appWindow.close()
+        }}>
+          <WinCloseIcon />
+        </div>
       </div>
       <div className="h-[calc(100vh-30px)] overflow-y-auto">
         <div className="py-4 pl-4 pr-4 flex flex-col">
@@ -200,7 +207,7 @@ const Translator: React.FC = () => {
 
         <Toaster />
       </div>
-    </>
+    </div>
   )
 }
 

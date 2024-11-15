@@ -7,11 +7,14 @@ import CloseIcon from "@/components/Icon/CloseIcon"
 import InputIcon from "@/components/Icon/InputIcon"
 import ClipboardIcon from "@/components/Icon/ClipboardIcon"
 import PinIcon from "@/components/Icon/PinIcon"
+import WinCloseIcon from "@/components/Icon/WinCloseIcon"
 import PinFillIcon from "@/components/Icon/PinFillIcon"
+import PencilIcon from "@/components/Icon/PencilIcon"
 import { useLocalStorageState, useRequest } from "ahooks"
 import { getProfile } from "@/api/user"
 import { useConfig } from "@/hooks/useConfig"
-import PencilIcon from "@/components/Icon/PencilIcon"
+import { osType } from "@/utils/env"
+
 
 const App: React.FC = () => {
   const [accessToken] = useLocalStorageState<string | undefined>(
@@ -54,12 +57,12 @@ const App: React.FC = () => {
   }
 
   return (
-    <>
+    <div>
       <div
         className="fixed top-[0px] left-[5px] right-[5px] h-[35px]"
         data-tauri-drag-region="true"
       />
-      <div className="h-[30px] flex flex-row-reverse mr-[5px]">
+      <div className={`h-[30px] px-1 flex items-center mr-[5px] ${osType === 'Darwin' ? 'justify-end' : 'justify-between'}`}>
         <label className="swap">
           <input
             type="checkbox"
@@ -74,6 +77,11 @@ const App: React.FC = () => {
           <PinFillIcon className="swap-on" />
           <PinIcon className="swap-off" />
         </label>
+        <div className={`relative cursor-pointer ${osType === 'Darwin' && 'hidden'}`} onClick={() => {
+          appWindow.close()
+        }}>
+          <WinCloseIcon />
+        </div>
       </div>
       <div className="flex flex-col justify-between h-[calc(100vh-30px)] bg-white">
         <div className="p-4 bg-white">
@@ -184,7 +192,7 @@ const App: React.FC = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

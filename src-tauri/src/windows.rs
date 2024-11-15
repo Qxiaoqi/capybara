@@ -7,6 +7,9 @@ use log::info;
 use mouse_position::mouse_position::Mouse;
 use tauri::{LogicalPosition, Manager, PhysicalPosition};
 
+#[cfg(target_os = "windows")]
+use window_shadows::set_shadow;
+
 pub const TRANSLATOR_WIN_NAME: &str = "translator";
 pub const CONFIG_WIN_NAME: &str = "config";
 #[cfg(target_os = "windows")]
@@ -254,7 +257,8 @@ pub fn build_window<'a, R: tauri::Runtime>(
 
     #[cfg(not(target_os = "macos"))]
     {
-        let window = builder.transparent(true).decorations(true).build().unwrap();
+        let window = builder.transparent(true).decorations(false).build().unwrap();
+        set_shadow(&window, true).unwrap_or_default();
 
         // post_process_window(&window);
 

@@ -5,9 +5,13 @@ import AboutIcon from "@/components/Icon/AboutIcon"
 import UserIcon from "@/components/Icon/UserIcon"
 import MenuItem from "@/components/MenuItem"
 import KeyboardIcon from "@/components/Icon/KeyboardIcon"
+import WinCloseIcon from "@/components/Icon/WinCloseIcon"
+import { appWindow } from "@tauri-apps/api/window"
+import { osType } from "@/utils/env"
 import About from "./About"
 import User from "./User"
 import Keyboard from "./Keyboard"
+
 // import Recharge from "./Recharge"
 
 const MenuList = [
@@ -61,6 +65,15 @@ const Config: React.FC = () => {
         </ul>
       </div>
       <div className="ml-56 h-full">
+        {osType === 'Windows_NT' && (
+          <div className={`h-[30px] absolute top-0 right-0 px-1 flex items-center mr-[5px] justify-end bg-transparent`}>
+            <div className="relative cursor-pointer" onClick={() => {
+              appWindow.close()
+            }}>
+              <WinCloseIcon />
+            </div>
+          </div>
+        )}
         <div className="navbar bg-base-100">
           <a className="btn btn-ghost text-xl">
             {MenuList.find((item) => item.id === selected)?.title}
