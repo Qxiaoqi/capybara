@@ -108,8 +108,8 @@ pub fn get_translator_window(
             )
             .title("Translator")
             .fullscreen(false)
-            .inner_size(1000.0, 600.0)
-            .min_inner_size(540.0, 600.0)
+            .inner_size(450.0, 700.0)
+            .min_inner_size(450.0, 600.0)
             .resizable(true)
             .skip_taskbar(false)
             .focused(false);

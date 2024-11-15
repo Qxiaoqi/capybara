@@ -44,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({
     <div className="flex items-center justify-between">
       <div className="flex">
         <select
-          className="select select-bordered mr-4"
+          className="select select-bordered mr-4 w-32"
           onChange={onSrcChange}
           value={srcSelect}
         >
@@ -58,7 +58,7 @@ const Header: React.FC<HeaderProps> = ({
           <SwapIcon />
         </button>
         <select
-          className="select select-bordered ml-4"
+          className="select select-bordered ml-4 w-32"
           onChange={onDestChange}
           value={destSelect}
         >

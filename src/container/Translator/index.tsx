@@ -148,59 +148,56 @@ const Translator: React.FC = () => {
           <PinIcon className="swap-off" />
         </label>
       </div>
-      <div className="flex h-[calc(100vh-30px)]">
-        <div className="w-6/12 h-full">
-          <div className="py-4 pl-4 pr-2 flex flex-col h-full">
-            <TranslateHeader
-              {...{ srcSelect, destSelect, setSrcSelect, setDestSelect }}
-              onTranslateClick={onTranslateClick}
-            ></TranslateHeader>
-            <textarea
-              className="textarea mt-4 p-4 bg-base-200 rounded flex-1 overflow-y-auto border-none text-base focus:outline-none focus:ring-0"
-              placeholder="输入文本..."
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            ></textarea>
-            <div className="h-12 bg-neutral rounded-b">
-              <div className="flex flex-row-reverse">
-                <button
-                  className="btn btn-ghost"
-                  onClick={() => {
-                    writeText(originText)
-                    toast.success("复制成功")
-                  }}
-                >
-                  <CopyIcon />
-                </button>
-              </div>
+      <div className="h-[calc(100vh-30px)] overflow-y-auto">
+        <div className="py-4 pl-4 pr-4 flex flex-col">
+          <TranslateHeader
+            {...{ srcSelect, destSelect, setSrcSelect, setDestSelect }}
+            onTranslateClick={onTranslateClick}
+          ></TranslateHeader>
+          <textarea
+            className="w-full textarea mt-4 p-4 bg-base-200 rounded overflow-y-auto border-none text-base focus:outline-none focus:ring-0 h-44"
+            placeholder="输入文本..."
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          ></textarea>
+          <div className="h-10 bg-neutral rounded-b">
+            <div className="flex flex-row-reverse">
+              <button
+                className="btn btn-ghost h-10 min-h-10"
+                onClick={() => {
+                  writeText(originText)
+                  toast.success("复制成功")
+                }}
+              >
+                <CopyIcon />
+              </button>
             </div>
           </div>
         </div>
 
-        <div className="w-6/12 h-full overflow-y-auto">
-          <div className="py-4 pl-2 pr-4">
-            <CollapsePanel
-              title="通义千问"
-              content={qwenError?.message || qwenData?.data?.result || ""}
-              loading={qwenLoading}
-            />
-            {/* <CollapsePanel
+        <div className="p-4">
+          <CollapsePanel
+            title="通义千问"
+            content={qwenError?.message || qwenData?.data?.result || ""}
+            loading={qwenLoading}
+          />
+          {/* <CollapsePanel
               title="ChatGPT"
               content={azureError?.message || azureData?.data?.result || ""}
               loading={azureLoading}
             /> */}
-            <CollapsePanel
-              title="百度翻译"
-              content={baiduError?.message || baiduData?.data?.result || ""}
-              loading={baiduLoading}
-            />
-            <CollapsePanel
-              title="腾讯翻译"
-              content={tencentError?.message || tencentData?.data?.result || ""}
-              loading={tencentLoading}
-            />
-          </div>
+          <CollapsePanel
+            title="百度翻译"
+            content={baiduError?.message || baiduData?.data?.result || ""}
+            loading={baiduLoading}
+          />
+          <CollapsePanel
+            title="腾讯翻译"
+            content={tencentError?.message || tencentData?.data?.result || ""}
+            loading={tencentLoading}
+          />
         </div>
+
         <Toaster />
       </div>
     </>
