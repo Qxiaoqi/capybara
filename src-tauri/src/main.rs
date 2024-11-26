@@ -7,6 +7,7 @@ mod hotkey;
 mod ocr;
 mod selection;
 mod text;
+mod tray;
 mod user;
 mod windows;
 
@@ -24,6 +25,7 @@ use once_cell::sync::OnceCell;
 use parking_lot::Mutex;
 use sysinfo::{CpuExt, System, SystemExt};
 use tauri::AppHandle;
+use tray::*;
 
 pub static APP_HANDLE: OnceCell<AppHandle> = OnceCell::new();
 pub static CPU_VENDOR: Mutex<String> = Mutex::new(String::new());
@@ -40,10 +42,14 @@ fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_fs_watch::init())
+        .system_tray(tauri::SystemTray::new())
         .setup(move |app| {
             APP_HANDLE.get_or_init(|| app.handle().clone());
             // Init Config
             init_config(app);
+
+            // Update Tray
+            update_tray(app.handle(), "".to_string());
 
             crate::windows::show_main_window(false, true);
 
@@ -69,6 +75,12 @@ fn main() {
             cut_image,
             finish_ocr
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .on_system_tray_event(tray_event_handler)
+        .build(tauri::generate_context!())
+        .expect("error while running tauri application")
+        .run(|_app_handle, event| {
+            if let tauri::RunEvent::ExitRequested { api, .. } = event {
+                api.prevent_exit();
+            }
+        });
 }

@@ -1,0 +1,8 @@
+{
+  "tauri": {
+    "systemTray": {
+      "iconPath": "icons_mac/tray.ico",
+      "iconAsTemplate": true
+    }
+  }
+}
